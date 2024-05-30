@@ -12,7 +12,7 @@ const sessionHistorySchema = new mongoose.Schema(
   { _id: false } // Prevents MongoDB from creating an _id field for each session entry
 );
 
-const clientSchema = new mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
     email: {
       type: String,
@@ -31,9 +31,10 @@ const clientSchema = new mongoose.Schema(
     sessionsLeft: {
       type: Number,
       default: 0,
+      min: 0,
     },
     sessionsHistory: {
-      type: Array,
+      type: [sessionHistorySchema],
       default: [],
     },
     profileImg: {
@@ -48,6 +49,6 @@ const clientSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Client = mongoose.model("Client", clientSchema);
+const User = mongoose.model("User", userSchema);
 
-export default Client;
+export default User;

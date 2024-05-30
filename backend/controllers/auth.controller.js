@@ -1,5 +1,5 @@
 import { generateTokenAndSetCookie } from "../lib/utils/generateToken.js";
-import Client from "../models/user.model.js";
+import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 
 export const signup = async (req, res) => {
@@ -18,8 +18,8 @@ export const signup = async (req, res) => {
         .json({ error: "Please enter a valid email address" });
     }
 
-    const existingClient = await Client.findOne({ email });
-    if (existingClient) {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
       return res.status(400).json({ error: "User already exists" });
     }
 
@@ -36,23 +36,23 @@ export const signup = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const newClient = new Client({
+    const newUser = new User({
       fullName,
       email,
       password: hashedPassword,
     });
 
-    if (newClient) {
-      generateTokenAndSetCookie(newClient._id, res);
-      await newClient.save();
+    if (newUser) {
+      generateTokenAndSetCookie(newUser._id, res);
+      await newUser.save();
       return res.status(201).json({
-        _id: newClient._id,
-        fullName: newClient.fullName,
-        email: newClient.email,
-        sessionsLeft: newClient.sessionsLeft,
-        sessionsHistory: newClient.sessionsHistory,
-        profileImg: newClient.profileImg,
-        isAdmin: newClient.isAdmin,
+        _id: newUser._id,
+        fullName: newUser.fullName,
+        email: newUser.email,
+        sessionsLeft: newUser.sessionsLeft,
+        sessionsHistory: newUser.sessionsHistory,
+        profileImg: newUser.profileImg,
+        isAdmin: newUser.isAdmin,
       });
     } else {
       res.status(400).json({ error: "Invalid user data" });
@@ -67,25 +67,25 @@ export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const existingClient = await Client.findOne({ email });
+    const existingUser = await User.findOne({ email });
     const isPasswordCorrect = await bcrypt.compare(
       password,
-      existingClient?.password || ""
+      existingUser?.password || ""
     );
 
-    if (!existingClient || !isPasswordCorrect) {
+    if (!existingUser || !isPasswordCorrect) {
       return res.status(400).json({ error: "Wrong email or password!" });
     }
 
-    generateTokenAndSetCookie(existingClient._id, res);
+    generateTokenAndSetCookie(existingUser._id, res);
     return res.status(200).json({
-      _id: existingClient._id,
-      fullName: existingClient.fullName,
-      email: existingClient.email,
-      sessionsLeft: existingClient.sessionsLeft,
-      sessionsHistory: existingClient.sessionsHistory,
-      profileImg: existingClient.profileImg,
-      isAdmin: existingClient.isAdmin,
+      _id: existingUser._id,
+      fullName: existingUser.fullName,
+      email: existingUser.email,
+      sessionsLeft: existingUser.sessionsLeft,
+      sessionsHistory: existingUser.sessionsHistory,
+      profileImg: existingUser.profileImg,
+      isAdmin: existingUser.isAdmin,
     });
   } catch (error) {
     console.log("Error in login controller", error.message);
@@ -105,7 +105,7 @@ export const logout = async (req, res) => {
 
 export const getMe = async (req, res) => {
   try {
-    const user = await Client.findById(req.user._id).select("-password");
+    const user = await User.findById(req.user._id).select("-password");
     if (!user) {
       return res.status(401).json({ error: "User not found" });
     }

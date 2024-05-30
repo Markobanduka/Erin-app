@@ -1,3 +1,5 @@
+import User from "./models/user.model.js";
+
 // Example function to add a new session to a user's session history
 async function addSession(userId) {
   try {
