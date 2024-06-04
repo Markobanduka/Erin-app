@@ -8,8 +8,8 @@ import {
 
 const router = express.Router();
 
-router.get("/profile/:email", protectRoute, getUserProfile);
+router.get("/profile/:id", protectRoute, getUserProfile);
 router.post("/startSession", protectRoute, startSession);
-router.post("/update", protectRoute, updateUser);
+router.post("/update/:id", protectRoute, updateUser);
 
 export default router;

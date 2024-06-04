@@ -1,17 +1,5 @@
 import mongoose from "mongoose";
 
-// Define a sub-schema for the session history
-const sessionHistorySchema = new mongoose.Schema(
-  {
-    sessionStart: {
-      type: Date,
-      default: Date.now, // Automatically sets the timestamp when the session is created
-    },
-    // Add any other fields related to the session if needed
-  },
-  { _id: false } // Prevents MongoDB from creating an _id field for each session entry
-);
-
 const userSchema = new mongoose.Schema(
   {
     email: {
@@ -34,7 +22,14 @@ const userSchema = new mongoose.Schema(
       min: 0,
     },
     sessionsHistory: {
-      type: [sessionHistorySchema],
+      type: [
+        {
+          sessionStart: {
+            type: Date,
+            required: true,
+          },
+        },
+      ],
       default: [],
     },
     profileImg: {

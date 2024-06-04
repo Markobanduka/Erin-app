@@ -5,6 +5,7 @@ import { v2 as cloudinary } from "cloudinary";
 
 import authRoutes from "./routes/auth.routes.js";
 import userRoutes from "./routes/user.routes.js";
+import sessionRoutes from "./routes/session.routes.js";
 
 import connectMongoDB from "./db/connectMongoDB.js";
 
@@ -31,6 +32,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/sessions", sessionRoutes);
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);

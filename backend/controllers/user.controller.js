@@ -1,12 +1,13 @@
 import bcrypt from "bcryptjs";
 import User from "../models/user.model.js";
 import { v2 as cloudinary } from "cloudinary";
+import Session from "../models/session.model.js";
 
 export const getUserProfile = async (req, res) => {
-  const { email } = req.params;
+  const { id } = req.params;
 
   try {
-    const user = await User.findOne({ email }).select("-password");
+    const user = await User.findById(id).select("-password");
     if (!user) return res.status(404).json({ error: "User not found" });
 
     res.status(200).json(user);
@@ -26,11 +27,14 @@ export const startSession = async (req, res) => {
       return res.status(400).json({ error: "No sessions left" });
     }
 
-    const newSession = {
+    const newSession = new Session({
+      user: currentUser._id,
       sessionStart: new Date(),
-    };
+    });
 
-    currentUser.sessionsHistory.push(newSession);
+    await newSession.save();
+
+    currentUser.sessionsHistory.push({ sessionStart: newSession.sessionStart });
     currentUser.sessionsLeft -= 1;
     await currentUser.save();
 
@@ -44,17 +48,23 @@ export const startSession = async (req, res) => {
 export const updateUser = async (req, res) => {
   const { fullName, email, currentPassword, newPassword } = req.body;
   let { profileImg, coverImg } = req.body;
-  const userId = req.user._id;
+  const { id } = req.params;
+  const authUser = req.user._id.toString();
+  const isAdmin = req.user.isAdmin;
   try {
-    let user = await User.findById(userId);
+    if (isAdmin) {
+      if (!id) return res.status(400).json({ error: "User id not found" });
+    } else {
+      if (id !== authUser)
+        return res.status(401).json({ error: "Unauthorized" });
+    }
+    let user = await User.findById(id);
     if (!user) return res.status(404).json({ error: "User not found" });
 
     if ((!newPassword && currentPassword) || (!currentPassword && newPassword))
-      return res
-        .status(400)
-        .json({
-          error: "Please provide both current password and new password",
-        });
+      return res.status(400).json({
+        error: "Please provide both current password and new password",
+      });
 
     if (currentPassword && newPassword) {
       const isMatch = await bcrypt.compare(currentPassword, user.password);
