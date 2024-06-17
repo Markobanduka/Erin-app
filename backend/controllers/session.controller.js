@@ -109,30 +109,3 @@ export const getMySessions = async (req, res) => {
       .json({ error: "Internal Server Error: " + error.message });
   }
 };
-// export const getUserSessions = async (req, res) => {
-//   const userId = req.params.id;
-//   const isAdmin = req.user.isAdmin;
-
-//   if (!isAdmin) {
-//     return res.status(401).json({ error: "Unauthorized" });
-//   }
-
-//   try {
-//     const user = await User.findById(userId);
-//     if (!user) return res.status(404).json({ error: "User not found" });
-
-//     const sessions = await Session.find({ user: user._id })
-//       .sort({ createdAt: -1 })
-//       .populate({
-//         path: "user",
-//         select: "-password",
-//       });
-
-//     return res.status(200).json(sessions);
-//   } catch (error) {
-//     console.error("Error in getUserSessions:", error.message);
-//     return res
-//       .status(500)
-//       .json({ error: "Internal Server Error: " + error.message });
-//   }
-// };

@@ -31,9 +31,11 @@ const AdminDashboard = () => {
           <PostSkeleton />
         </div>
       )}
-      {!isLoading && users?.length === 0 && <p>No users yet</p>}
+      {!isLoading && users?.length === 0 && (
+        <p className="mx-auto my-auto text-4xl">No users yet</p>
+      )}
       {!isLoading && users && (
-        <div>
+        <div className="mx-auto my-auto">
           {users.map((user) => (
             <User key={user._id} user={user} />
           ))}

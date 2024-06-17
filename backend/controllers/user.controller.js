@@ -108,3 +108,28 @@ export const updateUser = async (req, res) => {
     res.status(500).json({ error: "Internal server error " + error.message });
   }
 };
+
+export const deleteUser = async (req, res) => {
+  const { id } = req.params;
+  const isAdmin = req.user.isAdmin;
+  try {
+    if (isAdmin) {
+      if (!id) return res.status(400).json({ error: "User id not found" });
+    } else {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const user = await User.findById(id);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    if (user.img) {
+      const imgId = user.img.split("/").pop().slice(".")[0];
+      await cloudinary.uploader.destroy(imgId);
+    }
+
+    await User.findByIdAndDelete(id);
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    console.log("Error in deleteUser controller: " + error.message);
+    res.status(500).json({ error: "Internal server error " + error.message });
+  }
+};

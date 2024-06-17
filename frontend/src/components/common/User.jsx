@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import toast from "react-hot-toast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const User = ({ user }) => {
   const {
@@ -10,6 +12,7 @@ const User = ({ user }) => {
     sessionsHistory,
     createdAt,
     updatedAt,
+    _id,
   } = user;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -22,6 +25,33 @@ const User = ({ user }) => {
 
   const closeModal = () => {
     setIsModalOpen(false);
+  };
+
+  const queryClient = useQueryClient();
+
+  const { mutate: deleteUser, isPending } = useMutation({
+    mutationFn: async (_id) => {
+      try {
+        const res = await fetch(`/api/users/${user._id}`, {
+          method: "DELETE",
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || "Something went wrong");
+        }
+        return data;
+      } catch (error) {
+        throw new Error(error);
+      }
+    },
+    onSuccess: () => {
+      toast.success("User deleted successfully");
+      queryClient.invalidateQueries({ queryKey: ["allUsers"] });
+    },
+  });
+
+  const handleDeleteUser = () => {
+    deleteUser(_id);
   };
 
   return (
@@ -95,8 +125,11 @@ const User = ({ user }) => {
           <button className="btn btn-success w-1/2  text-white py-2 rounded-md mr-1">
             Update
           </button>
-          <button className="btn btn-error w-1/2  text-white py-2 rounded-md ml-1">
-            Delete
+          <button
+            className="btn btn-error w-1/2  text-white py-2 rounded-md ml-1"
+            onClick={() => handleDeleteUser(_id)}
+          >
+            {isPending ? "Loading" : "Delete"}
           </button>
         </div>
       </div>
