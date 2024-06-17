@@ -34,11 +34,7 @@ const Sidebar = () => {
       toast.error("Something went wrong while logging out");
     },
   });
-  // const data = {
-  //   fullName: "John Doe",
-  //   username: "johndoe",
-  //   profileImg: "/avatars/boy1.png",
-  // };
+
   const { data: authUser } = useQuery({ queryKey: ["authUser"] });
 
   return (
@@ -69,7 +65,7 @@ const Sidebar = () => {
 
           <li className="flex justify-center md:justify-start">
             <Link
-              to={`/profile/${authUser?.createdAt}`}
+              to={`/profile/${authUser?._id}`}
               className="flex gap-3 items-center hover:bg-stone-900 transition-all rounded-full duration-300 py-2 pl-2 pr-4 max-w-fit cursor-pointer"
             >
               <FaUser className="w-6 h-6" />

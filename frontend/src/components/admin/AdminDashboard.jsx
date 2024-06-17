@@ -1,45 +1,46 @@
-import { useState } from "react";
-
-import Posts from "../common/Posts";
-import CreatePost from "../../pages/home/CreatePost";
+import React from "react";
+import User from "../common/User";
+import { useQuery } from "@tanstack/react-query";
+import PostSkeleton from "../skeletons/PostSkeleton";
 
 const AdminDashboard = () => {
-  const [feedType, setFeedType] = useState("forYou");
+  const { data: users, isLoading } = useQuery({
+    queryKey: ["allUsers"],
+    queryFn: async () => {
+      try {
+        const res = await fetch("/api/users/admin");
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || "Something went wrong");
+        }
+        return data;
+      } catch (error) {
+        throw new Error(error);
+      }
+    },
+  });
+  console.log(users);
 
   return (
     <>
-      <div className="flex-[4_4_0] mr-auto border-r border-gray-700 min-h-screen">
-        {/* Header */}
-        <div className="flex w-full border-b border-gray-700">
-          <div
-            className={
-              "flex justify-center flex-1 p-3 hover:bg-secondary transition duration-300 cursor-pointer relative"
-            }
-            onClick={() => setFeedType("forYou")}
-          >
-            For you
-            {feedType === "forYou" && (
-              <div className="absolute bottom-0 w-10  h-1 rounded-full bg-primary"></div>
-            )}
-          </div>
-          <div
-            className="flex justify-center flex-1 p-3 hover:bg-secondary transition duration-300 cursor-pointer relative"
-            onClick={() => setFeedType("following")}
-          >
-            Following
-            {feedType === "following" && (
-              <div className="absolute bottom-0 w-10  h-1 rounded-full bg-primary"></div>
-            )}
-          </div>
+      {isLoading && (
+        <div className="flex flex-col justify-center">
+          <PostSkeleton />
+          <PostSkeleton />
+          <PostSkeleton />
         </div>
-
-        {/*  CREATE POST INPUT */}
-        <CreatePost />
-
-        {/* POSTS */}
-        <Posts />
-      </div>
+      )}
+      {!isLoading && users?.length === 0 && <p>No users yet</p>}
+      {!isLoading && users && (
+        <div>
+          {users.map((user) => (
+            <User key={user._id} user={user} />
+          ))}
+        </div>
+      )}
     </>
   );
 };
+
 export default AdminDashboard;

@@ -1,6 +1,36 @@
 import User from "../models/user.model.js";
 import Session from "../models/session.model.js";
 
+export const startSession = async (req, res) => {
+  try {
+    const currentUser = await User.findById(req.user._id);
+
+    if (!currentUser) return res.status(404).json({ error: "User not found" });
+
+    if (currentUser.sessionsLeft <= 0) {
+      return res.status(400).json({ error: "No sessions left" });
+    }
+
+    const newSession = new Session({
+      user: currentUser._id,
+      sessionStart: new Date(),
+    });
+
+    await newSession.save();
+
+    currentUser.sessionsHistory.unshift({
+      sessionStart: newSession.sessionStart,
+    });
+    currentUser.sessionsLeft -= 1;
+    await currentUser.save();
+
+    res.status(200).json({ message: "Session started successfully" });
+  } catch (error) {
+    console.log("Error in starting session controller: " + error.message);
+    res.status(500).json({ error: "Internal server error " + error.message });
+  }
+};
+
 export const getAllSessions = async (req, res) => {
   const isAdmin = req.user.isAdmin;
   try {
@@ -33,6 +63,32 @@ export const getUserSessions = async (req, res) => {
 
   try {
     const user = await User.findById(userId).populate({
+      path: "sessionsHistory",
+      select: "sessionStart -_id",
+      options: { sort: { sessionStart: -1 } },
+    });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const sessionDates = user.sessionsHistory
+      .map((session) => session.sessionStart)
+      .sort((a, b) => new Date(b) - new Date(a));
+
+    return res.status(200).json(sessionDates);
+  } catch (error) {
+    console.error("Error in getUserSessions:", error.message);
+    return res
+      .status(500)
+      .json({ error: "Internal Server Error: " + error.message });
+  }
+};
+
+export const getMySessions = async (req, res) => {
+  const currentUser = req.user._id;
+
+  try {
+    const user = await User.findById(currentUser).populate({
       path: "sessionsHistory",
       select: "sessionStart -_id",
       options: { sort: { sessionStart: -1 } },

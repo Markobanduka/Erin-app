@@ -109,6 +109,7 @@ export const getMe = async (req, res) => {
     if (!user) {
       return res.status(401).json({ error: "User not found" });
     }
+    console.log(user);
     return res.status(200).json(user);
   } catch (error) {
     console.log("Error in getMe controller", error.message);

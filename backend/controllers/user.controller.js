@@ -1,7 +1,6 @@
 import bcrypt from "bcryptjs";
 import User from "../models/user.model.js";
 import { v2 as cloudinary } from "cloudinary";
-import Session from "../models/session.model.js";
 
 export const getUserProfile = async (req, res) => {
   const { id } = req.params;
@@ -17,36 +16,31 @@ export const getUserProfile = async (req, res) => {
   }
 };
 
-export const startSession = async (req, res) => {
+export const getAllUsers = async (req, res) => {
+  const loggedInUserId = req.user._id;
+  const isAdmin = req.user.isAdmin;
   try {
-    const currentUser = await User.findById(req.user._id);
+    if (isAdmin) {
+      const users = await User.find()
+        .sort({ updatedAt: -1 })
+        .select("-password");
 
-    if (!currentUser) return res.status(404).json({ error: "User not found" });
+      const filteredUsers = users.filter(
+        (user) => user._id.toString() !== loggedInUserId.toString()
+      );
 
-    if (currentUser.sessionsLeft <= 0) {
-      return res.status(400).json({ error: "No sessions left" });
+      return res.status(200).json(filteredUsers);
+    } else {
+      return res.status(401).json({ error: "Unauthorized" });
     }
-
-    const newSession = new Session({
-      user: currentUser._id,
-      sessionStart: new Date(),
-    });
-
-    await newSession.save();
-
-    currentUser.sessionsHistory.push({ sessionStart: newSession.sessionStart });
-    currentUser.sessionsLeft -= 1;
-    await currentUser.save();
-
-    res.status(200).json({ message: "Session started successfully" });
   } catch (error) {
-    console.log("Error in starting session controller: " + error.message);
-    res.status(500).json({ error: "Internal server error " + error.message });
+    console.log("Error in getAllUsers: " + error.message);
+    res.status(500).json({ error: "ISE " + error.message });
   }
 };
 
 export const updateUser = async (req, res) => {
-  const { fullName, email, currentPassword, newPassword } = req.body;
+  let { fullName, email, currentPassword, newPassword } = req.body;
   let { profileImg, coverImg } = req.body;
   const { id } = req.params;
   const authUser = req.user._id.toString();

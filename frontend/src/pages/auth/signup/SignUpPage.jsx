@@ -1,9 +1,7 @@
-import { Link } from "react-router-dom";
 import { useState } from "react";
-
-import { MdOutlineMail } from "react-icons/md";
+import { Link, useNavigate } from "react-router-dom";
+import { MdOutlineMail, MdPassword } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
-import { MdPassword } from "react-icons/md";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
@@ -14,6 +12,8 @@ const SignUpPage = () => {
     password: "",
     confirmedPassword: "",
   });
+
+  const navigate = useNavigate();
 
   const { mutate, isError, isPending, error } = useMutation({
     mutationFn: async ({ fullName, email, password, confirmedPassword }) => {
@@ -41,6 +41,7 @@ const SignUpPage = () => {
     },
     onSuccess: () => {
       toast.success("Account created successfully");
+      navigate("/login");
     },
   });
 
@@ -57,7 +58,7 @@ const SignUpPage = () => {
     <div className="max-w-screen-xl mx-auto flex h-screen px-10">
       <div className="flex-1 flex flex-col justify-center items-center">
         <form
-          className="lg:w-2/3  mx-auto md:mx-20 flex gap-4 flex-col"
+          className="lg:w-2/3 mx-auto md:mx-20 flex gap-4 flex-col"
           onSubmit={handleSubmit}
         >
           <h1 className="text-4xl font-extrabold text-white">Join today.</h1>
@@ -124,4 +125,5 @@ const SignUpPage = () => {
     </div>
   );
 };
+
 export default SignUpPage;
