@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { timeAgo } from "../../utils/date";
-import MoreInfoModal from "../../pages/profile/MoreInfoModal";
 
 const User = ({ user }) => {
   const {
@@ -63,7 +62,7 @@ const User = ({ user }) => {
   const { mutate: updateProfile, isPending: isUpdatingProfile } = useMutation({
     mutationFn: async ({ userId, formData }) => {
       try {
-        console.log(userId);
+        console.log(userId); // Ensure the correct user ID is logged
         const res = await fetch(`/api/users/update/${userId}`, {
           method: "POST",
           headers: {
@@ -172,24 +171,14 @@ const User = ({ user }) => {
                 <div className="py-4">
                   {currentSessionHistory.length > 0 ? (
                     currentSessionHistory.map((session, index) => (
-                      <div
+                      <p
                         key={session._id}
-                        className="flex justify-between items-center py-3 px-2 border border-sky-500"
+                        className="py-3 px-2 border border-sky-500"
                       >
-                        {/* <span>
-                          {session.sessionInfo || "No session info available"}
-                        </span> */}
                         {`${index + 1}. ${new Date(
                           session.sessionStart
-                        ).toLocaleDateString()}`}
-                        <span>
-                          <MoreInfoModal
-                            session={session}
-                            firstSessionDate={firstSessionDate}
-                            sessionsHistory={sessionsHistory}
-                          />
-                        </span>
-                      </div>
+                        ).toLocaleString()}`}
+                      </p>
                     ))
                   ) : (
                     <p>No sessions history</p>

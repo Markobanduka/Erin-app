@@ -28,13 +28,13 @@ const userSchema = new mongoose.Schema(
             type: Date,
             required: true,
           },
+          sessionInfo: {
+            type: String,
+            default: "", // Add default empty string
+          },
         },
       ],
       default: [],
-    },
-    profileImg: {
-      type: String,
-      default: "",
     },
     bio: {
       type: String,

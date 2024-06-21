@@ -14,6 +14,7 @@ export const startSession = async (req, res) => {
     const newSession = new Session({
       user: currentUser._id,
       sessionStart: new Date(),
+      sessionInfo: "", // Set sessionInfo to an empty string
     });
 
     await newSession.save();
@@ -27,6 +28,27 @@ export const startSession = async (req, res) => {
     res.status(200).json({ message: "Session started successfully" });
   } catch (error) {
     console.log("Error in starting session controller: " + error.message);
+    res.status(500).json({ error: "Internal server error " + error.message });
+  }
+};
+
+export const updateSessionInfo = async (req, res) => {
+  let { sessionInfo } = req.body;
+  const { id } = req.params;
+
+  try {
+    // Find the user that contains this session
+    const user = await User.findOne({ "sessionsHistory._id": id });
+    if (!user) return res.status(404).json({ error: "Session not found" });
+
+    // Find the session within the user's session history
+    const session = user.sessionsHistory.id(id);
+    if (!session) return res.status(404).json({ error: "Session not found" });
+    session.sessionInfo = sessionInfo;
+    await user.save();
+    res.status(200).json({ message: "Session info updated successfully" });
+  } catch (error) {
+    console.log("Error in updateSessionInfo controller: " + error.message);
     res.status(500).json({ error: "Internal server error " + error.message });
   }
 };

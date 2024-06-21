@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import User from "../models/user.model.js";
-import { v2 as cloudinary } from "cloudinary";
+import Session from "../models/session.model.js";
 
 export const getUserProfile = async (req, res) => {
   const { id } = req.params;
@@ -40,11 +40,18 @@ export const getAllUsers = async (req, res) => {
 };
 
 export const updateUser = async (req, res) => {
-  let { fullName, email, currentPassword, newPassword } = req.body;
-  let { profileImg, coverImg } = req.body;
+  let { fullName, email, currentPassword, newPassword, bio, sessionsLeft } =
+    req.body;
   const { id } = req.params;
   const authUser = req.user._id.toString();
   const isAdmin = req.user.isAdmin;
+
+  const existingEmail = await User.findOne({ email });
+
+  if (existingEmail === email) {
+    return res.status(400).json({ error: "Email already exists" });
+  }
+
   try {
     if (isAdmin) {
       if (!id) return res.status(400).json({ error: "User id not found" });
@@ -73,31 +80,11 @@ export const updateUser = async (req, res) => {
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(newPassword, salt);
     }
-    if (profileImg) {
-      if (user.profileImg) {
-        await cloudinary.uploader.destroy(
-          user.profileImg.split("/").pop().split(".")[0]
-        );
-      }
-
-      const uploadedResponse = await cloudinary.uploader.upload(profileImg);
-      profileImg = uploadedResponse.secure_url;
-    }
-
-    if (coverImg) {
-      if (user.coverImg) {
-        await cloudinary.uploader.destroy(
-          user.coverImg.split("/").pop().split(".")[0]
-        );
-      }
-      const uploadedResponse = await cloudinary.uploader.upload(coverImg);
-      coverImg = uploadedResponse.secure_url;
-    }
 
     user.fullName = fullName || user.fullName;
     user.email = email || user.email;
-    user.profileImg = profileImg || user.profileImg;
-    user.coverImg = coverImg || user.coverImg;
+    user.bio = bio || user.bio;
+    user.sessionsLeft = sessionsLeft || user.sessionsLeft;
 
     user = await user.save();
 
@@ -121,11 +108,7 @@ export const deleteUser = async (req, res) => {
     const user = await User.findById(id);
     if (!user) return res.status(404).json({ error: "User not found" });
 
-    if (user.img) {
-      const imgId = user.img.split("/").pop().slice(".")[0];
-      await cloudinary.uploader.destroy(imgId);
-    }
-
+    await Session.deleteMany({ user: id });
     await User.findByIdAndDelete(id);
     res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {

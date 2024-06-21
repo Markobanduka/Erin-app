@@ -6,6 +6,8 @@ import SignUpPage from "./pages/auth/signup/SignUpPage";
 import NotificationPage from "./pages/notification/NotificationPage";
 import ProfilePage from "./pages/profile/ProfilePage";
 import AdminDashboard from "./components/admin/AdminDashboard";
+import EditProfileModal from "./pages/profile/EditProfileModal";
+import AboutSession from "./components/sessions/AboutSession";
 
 const AppRoutes = ({ authUser }) => {
   return (
@@ -57,13 +59,14 @@ const AppRoutes = ({ authUser }) => {
         }
       />
       <Route
-        path="/notifications"
-        element={authUser ? <NotificationPage /> : <Navigate to="/login" />}
-      />
-      <Route
-        path="/profile/:email"
+        path="/profile/:id"
         element={authUser ? <ProfilePage /> : <Navigate to="/login" />}
       />
+      <Route path="/session/:id" element={<AboutSession />} />
+      {/* <Route
+        path="/profile/edit/:id"
+        element={authUser ? <EditProfileModal /> : <Navigate to="/login" />}
+      /> */}
       <Route
         path="*"
         element={

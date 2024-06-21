@@ -20,7 +20,7 @@ const AdminDashboard = () => {
       }
     },
   });
-  // console.log(users);
+  console.log(users);
 
   return (
     <>

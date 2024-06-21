@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
+import EditProfileModal from "../profile/EditProfileModal";
+import MoreInfoModal from "../profile/MoreInfoModal";
 
 const HomePage = () => {
   const queryClient = useQueryClient();
@@ -73,11 +75,20 @@ const HomePage = () => {
             <div className="py-4">
               {authUser?.sessionsHistory?.length > 0 ? (
                 authUser.sessionsHistory.map((session, index) => (
-                  <p key={index} className="py-3 px-2 border border-sky-500">
+                  <div
+                    key={index}
+                    className="flex justify-between items-center py-3 px-2 border border-sky-500"
+                  >
                     {`${index + 1}. ${new Date(
                       session.sessionStart
-                    ).toLocaleString()}`}
-                  </p>
+                    ).toLocaleDateString()}`}
+                    <span>
+                      <MoreInfoModal
+                        session={session}
+                        sessionsHistory={authUser.sessionsHistory}
+                      />
+                    </span>
+                  </div>
                 ))
               ) : (
                 <p>No session history available</p>
@@ -85,12 +96,7 @@ const HomePage = () => {
             </div>
           </div>
         </dialog>
-        <Link
-          className="w-1/2 flex justify-center items-center"
-          to="/update-profile"
-        >
-          <div>Update Profile</div>
-        </Link>
+        <EditProfileModal />
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
-import Post from "./Post";
-import PostSkeleton from "../skeletons/PostSkeleton";
-import { POSTS } from "../../utils/db/dummy";
+// import Post from "./Post";
+// import PostSkeleton from "../skeletons/PostSkeleton";
+// import { POSTS } from "../../utils/db/dummy";
 
 const Posts = () => {
   // const isLoading = false;
