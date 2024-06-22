@@ -6,6 +6,7 @@ import SignUpPage from "./pages/auth/signup/SignUpPage";
 import AdminDashboard from "./components/admin/AdminDashboard";
 import AboutSession from "./components/sessions/AboutSession";
 import BioPage from "./pages/profile/BioPage";
+import ProfilePage from "./pages/profile/ProfilePage";
 
 const AppRoutes = ({ authUser, bio }) => {
   return (
