@@ -8,8 +8,9 @@ import ProfilePage from "./pages/profile/ProfilePage";
 import AdminDashboard from "./components/admin/AdminDashboard";
 import EditProfileModal from "./pages/profile/EditProfileModal";
 import AboutSession from "./components/sessions/AboutSession";
+import BioPage from "./pages/profile/BioPage";
 
-const AppRoutes = ({ authUser }) => {
+const AppRoutes = ({ authUser, bio }) => {
   return (
     <Routes>
       <Route
@@ -63,10 +64,8 @@ const AppRoutes = ({ authUser }) => {
         element={authUser ? <ProfilePage /> : <Navigate to="/login" />}
       />
       <Route path="/session/:id" element={<AboutSession />} />
-      {/* <Route
-        path="/profile/edit/:id"
-        element={authUser ? <EditProfileModal /> : <Navigate to="/login" />}
-      /> */}
+      <Route path="/bio" element={<BioPage />} bio={bio} />
+
       <Route
         path="*"
         element={

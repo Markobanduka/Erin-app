@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { timeAgo } from "../../utils/date";
 import MoreInfoModal from "../../pages/profile/MoreInfoModal";
+import { IoMdContact } from "react-icons/io";
+import BioPage from "../../pages/profile/BioPage";
 
 const User = ({ user }) => {
   const {
@@ -14,6 +16,7 @@ const User = ({ user }) => {
     createdAt,
     updatedAt,
     _id,
+    bio,
   } = user;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -144,9 +147,10 @@ const User = ({ user }) => {
             ? firstSessionDate
             : timeAgo(firstSessionDate)}
         </p>
-        <p>
-          <strong>ID:</strong> {_id}
-        </p>
+
+        <div className="w-full">
+          <BioPage bio={bio} />
+        </div>
       </div>
       <div className="mt-4">
         <button
@@ -159,7 +163,6 @@ const User = ({ user }) => {
           <dialog open className="modal">
             <div className="modal-box">
               <form method="dialog">
-                {/* if there is a button in form, it will close the modal */}
                 <button
                   className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
                   onClick={closeModal}
@@ -176,9 +179,6 @@ const User = ({ user }) => {
                         key={session._id}
                         className="flex justify-between items-center py-3 px-2 border border-sky-500"
                       >
-                        {/* <span>
-                          {session.sessionInfo || "No session info available"}
-                        </span> */}
                         {`${index + 1}. ${new Date(
                           session.sessionStart
                         ).toLocaleDateString()}`}

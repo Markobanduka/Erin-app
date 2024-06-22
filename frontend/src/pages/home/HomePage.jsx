@@ -1,5 +1,4 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import EditProfileModal from "../profile/EditProfileModal";
 import MoreInfoModal from "../profile/MoreInfoModal";
@@ -7,12 +6,7 @@ import MoreInfoModal from "../profile/MoreInfoModal";
 const HomePage = () => {
   const queryClient = useQueryClient();
 
-  const {
-    mutate: startSessionMutation,
-    isError,
-    isPending,
-    error,
-  } = useMutation({
+  const { mutate: startSessionMutation, isPending } = useMutation({
     mutationFn: async () => {
       try {
         const res = await fetch("api/sessions/startSession", {
@@ -42,7 +36,7 @@ const HomePage = () => {
         style={{ height: "calc(100vh - 5rem)" }}
       >
         <button
-          className="btn btn-success"
+          className="btn btn-success rounded-lg"
           onClick={(e) => {
             e.preventDefault();
             if (window.confirm("Are you sure you want to start session")) {

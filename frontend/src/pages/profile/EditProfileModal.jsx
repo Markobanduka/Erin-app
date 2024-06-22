@@ -92,13 +92,6 @@ const EditProfileModal = () => {
                 name="currentPassword"
                 onChange={handleInputChange}
               />
-              {/* <textarea
-                placeholder="Bio"
-                className="flex-1 input border border-gray-700 rounded p-2 input-md"
-                value={formData.bio}
-                name="bio"
-                onChange={handleInputChange}
-              /> */}
             </div>
             <div className="flex flex-wrap gap-2">
               <input
@@ -109,14 +102,6 @@ const EditProfileModal = () => {
                 name="newPassword"
                 onChange={handleInputChange}
               />
-              {/* <input
-                type="number"
-                placeholder="Sessions"
-                className="flex-1 input border border-gray-700 rounded p-2 input-md"
-                value={formData.sessionsLeft}
-                name="sessionsLeft"
-                onChange={handleInputChange}
-              /> */}
             </div>
             <button className="btn btn-primary rounded-full btn-sm text-white">
               {isUpdatingProfile ? "Updating" : "Update"}

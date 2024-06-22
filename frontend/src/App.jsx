@@ -12,7 +12,6 @@ function App() {
         const res = await fetch("/api/auth/me");
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Something went wrong");
-        console.log("Admin from App:", data.isAdmin);
         return data;
       } catch (error) {
         console.error(error);
