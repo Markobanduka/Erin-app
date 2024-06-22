@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { timeAgo } from "../../utils/date";
 import MoreInfoModal from "../../pages/profile/MoreInfoModal";
-import { IoMdContact } from "react-icons/io";
 import BioPage from "../../pages/profile/BioPage";
 
 const User = ({ user }) => {

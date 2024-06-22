@@ -14,7 +14,7 @@ export const startSession = async (req, res) => {
     const newSession = new Session({
       user: currentUser._id,
       sessionStart: new Date(),
-      sessionInfo: "", // Set sessionInfo to an empty string
+      sessionInfo: "",
     });
 
     await newSession.save();
@@ -37,11 +37,9 @@ export const updateSessionInfo = async (req, res) => {
   const { id } = req.params;
 
   try {
-    // Find the user that contains this session
     const user = await User.findOne({ "sessionsHistory._id": id });
     if (!user) return res.status(404).json({ error: "Session not found" });
 
-    // Find the session within the user's session history
     const session = user.sessionsHistory.id(id);
     if (!session) return res.status(404).json({ error: "Session not found" });
     session.sessionInfo = sessionInfo;

@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema(
           },
           sessionInfo: {
             type: String,
-            default: "", // Add default empty string
+            default: "",
           },
         },
       ],

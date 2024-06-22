@@ -11,10 +11,6 @@ const sessionSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
-    // sessionInfo: {
-    //   type: String,
-    //   default: "", // Add default empty string
-    // },
   },
   { timestamps: true }
 );

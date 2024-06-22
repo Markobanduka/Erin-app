@@ -11,11 +11,8 @@ import { protectRoute } from "../middleware/protectRoute.js";
 
 const router = express.Router();
 
-// ? ?
-router.get("/all", protectRoute, getAllSessions);
-// ? ?
-router.get("/", protectRoute, getMySessions); // for client
-router.get("/:id", protectRoute, getUserSessions); // for admin
+router.get("/", protectRoute, getMySessions);
+router.get("/:id", protectRoute, getUserSessions);
 router.post("/startSession", protectRoute, startSession);
 router.post("/:id", protectRoute, updateSessionInfo);
 

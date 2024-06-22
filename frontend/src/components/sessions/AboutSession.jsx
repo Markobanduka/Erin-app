@@ -59,7 +59,6 @@ const AboutSession = ({ session }) => {
 
   return (
     <div className="flex mx-auto">
-      {/* <h1 className="p-10">ID: {id}</h1> */}
       <div className="flex flex-col items-center">
         <textarea
           placeholder="About session..."

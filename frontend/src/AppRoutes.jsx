@@ -3,10 +3,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/home/HomePage";
 import LoginPage from "./pages/auth/login/LoginPage";
 import SignUpPage from "./pages/auth/signup/SignUpPage";
-import NotificationPage from "./pages/notification/NotificationPage";
-import ProfilePage from "./pages/profile/ProfilePage";
 import AdminDashboard from "./components/admin/AdminDashboard";
-import EditProfileModal from "./pages/profile/EditProfileModal";
 import AboutSession from "./components/sessions/AboutSession";
 import BioPage from "./pages/profile/BioPage";
 
