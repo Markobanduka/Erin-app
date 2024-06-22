@@ -2,11 +2,10 @@
   "name": "training-app",
   "version": "1.0.0",
   "description": "",
-  "main": "backend/server.js",
+  "main": "server.js",
   "type": "module",
   "scripts": {
-    "dev": "NODE_ENV=development nodemon backend/server.js",
-    "start": "set NODE_ENV=production node backend/server.js",
+    "start": "node backend/server.js",
     "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend"
   },
   "keywords": [],
